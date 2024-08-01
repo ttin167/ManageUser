@@ -23,8 +23,11 @@ namespace UserManager
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            AddUser(txtName.Text, txtAddress.Text, txtPhone.Text);
-            LoadData();
+            if (ValidateUserInput())
+            {
+                AddUser(txtName.Text, txtAddress.Text, txtPhone.Text);
+                LoadData();
+            }
         }
         private void LoadData()
         {
@@ -100,14 +103,18 @@ namespace UserManager
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
-                int id = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["Id"].Value);
-                DeleteUser(id);
-                LoadData(); 
-                ClearInputFields(); 
-            }
-            else
-            {
-                MessageBox.Show("Please select a user to delete.");
+                DialogResult result = MessageBox.Show("Are you sure you want to delete this user ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    int id = Convert.ToInt32(dataGridView1.SelectedRows[0].Cells["Id"].Value);
+                    DeleteUser(id);
+                    LoadData();
+                    ClearInputFields();
+                }
+                else
+                {
+                    MessageBox.Show("Returning to main screen", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
         }
 
@@ -153,15 +160,35 @@ namespace UserManager
             }
         }
 
-        private bool ValidateInput()
+        private bool ValidateUserInput()
         {
-            return !string.IsNullOrWhiteSpace(txtName.Text) &&
-                   !string.IsNullOrWhiteSpace(txtAddress.Text) &&
-                   !string.IsNullOrWhiteSpace(txtPhone.Text) &&
-                   txtName.Text != "Name" &&
-                   txtAddress.Text != "Address" &&
-                   txtPhone.Text != "Phone";
+            // Kiểm tra nếu tên không rỗng
+            if (string.IsNullOrWhiteSpace(txtName.Text))
+            {
+                MessageBox.Show("Please enter the name", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtName.Focus();
+                return false;
+            }
+
+            // Kiểm tra nếu địa chỉ không rỗng
+            if (string.IsNullOrWhiteSpace(txtAddress.Text))
+            {
+                MessageBox.Show("Please enter the address.", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAddress.Focus();
+                return false;
+            }
+
+            // Kiểm tra nếu số điện thoại không rỗng và đúng định dạng số
+            if (string.IsNullOrWhiteSpace(txtPhone.Text) || !txtPhone.Text.All(char.IsDigit))
+            {
+                MessageBox.Show("Please enter validate phone number", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPhone.Focus();
+                return false;
+            }
+
+            return true;
         }
+
 
         private void ClearInputFields()
         {

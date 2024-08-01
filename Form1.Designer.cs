@@ -9,7 +9,6 @@ namespace UserManager
     partial class Form1
     {
         private System.ComponentModel.IContainer components = null;
-
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -31,6 +30,8 @@ namespace UserManager
             this.btnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
+
+          
             // 
             // dataGridView1
             // 
